@@ -1,0 +1,23 @@
+name: Docker_Image_Sync
+
+on:
+  workflow_dispatch: # 允许你手动点击按钮开始运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Aliyun
+        run: |
+          echo "${{ secrets.ALI_PASSWORD }}" | docker login --username=hanqingdocker --password-stdin crpi-gub8j4sqs24nam8o.cn-chengdu.personal.cr.aliyuncs.com
+
+      - name: Pull and Push
+        run: |
+          # 1. 从 Docker Hub 拉取 (GitHub 服务器在国外，速度极快)
+          docker pull hanqingdocker/ce-gzsl-env:v1
+          
+          # 2. 修改标签为阿里云成都仓库地址
+          docker tag hanqingdocker/ce-gzsl-env:v1 crpi-gub8j4sqs24nam8o.cn-chengdu.personal.cr.aliyuncs.com/hanqing-docker-aliyu/ce-gzsl-env:v1-actions
+          
+          # 3. 推送到阿里云
+          docker push crpi-gub8j4sqs24nam8o.cn-chengdu.personal.cr.aliyuncs.com/hanqing-docker-aliyu/ce-gzsl-env:v1-actions
